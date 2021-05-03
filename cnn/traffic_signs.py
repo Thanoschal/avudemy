@@ -85,7 +85,8 @@ def start():
                 axs[j][i].set_title(str(j) + "-" + row['SignName'])
                 num_of_samples.append(len(x_selected))
     plt.show()
-   
+    """
+
     #define the LeNet model function
     def leNet_model():
         model = Sequential()
@@ -95,20 +96,21 @@ def start():
         # padding: valid,  casual, same
         #input shape is just for the first layer
         #PADDING NEEDED WHEN FREATURES ARE IN THE CORNER OF THE IMAGES
-        model.add(Conv2D(30, (5, 5), input_shape=(28, 28, 1), activation='relu'))
+        model.add(Conv2D(30, (5, 5), input_shape=(32, 32, 1), activation='relu'))
         model.add(MaxPooling2D(pool_size=(2,2)))
         model.add(Conv2D(15, (3, 3), activation='relu'))
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Flatten())
         model.add(Dense(500, activation='relu'))
-        model.add(Dense(num_classes, activation='softmax'))
+        model.add(Dropout(0.5))
+        model.add(Dense(43, activation='softmax'))
         model.compile(Adam(lr=0.01), loss='categorical_crossentropy', metrics=['accuracy'])
         return model
 
     model = leNet_model()
     print(model.summary())
     history = model.fit(X_train, y_train, epochs=10, validation_split=0.1, batch_size=400, verbose=1, shuffle=1)
-    """
+
 
 
 if __name__ == '__main__':
