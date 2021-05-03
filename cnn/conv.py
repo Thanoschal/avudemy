@@ -82,5 +82,9 @@ def start():
 
     model = leNet_model()
     print(model.summary())
+    history = model.fit(X_train, y_train, epochs=10, validation_split=0.1, batch_size=400, verbose=1, shuffle=1)
+
+
+
 if __name__ == '__main__':
     start()
