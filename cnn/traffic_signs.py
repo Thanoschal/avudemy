@@ -8,6 +8,7 @@ from keras.optimizers import Adam
 from keras.utils.np_utils import to_categorical
 from keras.layers import Dropout, Flatten
 from keras.layers.convolutional import Conv2D, MaxPooling2D
+from keras.preprocessing.image import ImageDataGenerator
 import pandas as pd
 import random
 import cv2
@@ -67,6 +68,16 @@ def start():
     y_val = to_categorical(y_val, 43)
     y_test = to_categorical(y_test, 43)
 
+    datagen = ImageDataGenerator(width_shift_range=0.1,
+                       height_shift_range=0.1,
+                       zoom_range=0.2,
+                       shear_range=0.1,
+                       rotation_range=10)
+
+    datagen.fit(X_train)
+    batches = datagen.flow(X_train, y_train, batch_size=15)
+    X_batch, y_batch = next(batches)
+
 
     """
     num_of_samples = []
@@ -96,21 +107,34 @@ def start():
         # padding: valid,  casual, same
         #input shape is just for the first layer
         #PADDING NEEDED WHEN FREATURES ARE IN THE CORNER OF THE IMAGES
-        model.add(Conv2D(30, (5, 5), input_shape=(32, 32, 1), activation='relu'))
+        model.add(Conv2D(60, (5, 5), input_shape=(32, 32, 1), activation='relu'))
+        model.add(Conv2D(60, (5, 5), activation='relu'))
         model.add(MaxPooling2D(pool_size=(2,2)))
-        model.add(Conv2D(15, (3, 3), activation='relu'))
+
+        model.add(Conv2D(30, (3, 3), activation='relu'))
+        model.add(Conv2D(30, (3, 3), activation='relu'))
         model.add(MaxPooling2D(pool_size=(2, 2)))
+        #model.add(Dropout(0.5))
+
         model.add(Flatten())
         model.add(Dense(500, activation='relu'))
         model.add(Dropout(0.5))
         model.add(Dense(43, activation='softmax'))
-        model.compile(Adam(lr=0.01), loss='categorical_crossentropy', metrics=['accuracy'])
+        model.compile(Adam(lr=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
         return model
 
     model = leNet_model()
     print(model.summary())
-    history = model.fit(X_train, y_train, epochs=10, validation_split=0.1, batch_size=400, verbose=1, shuffle=1)
 
+    history = model.fit_generator(datagen.flow(X_train, y_train, batch_size=50),
+                                  steps_per_epoch=2000,
+                                  epochs=10,
+                                  validation_data=(X_val, y_val),
+                                  shuffle=1)
+
+    score = model.evaluate(X_test, y_test, verbose= 0)
+    print('Test score: ', score[0])
+    print('Test accuracy: ', score[1])
 
 
 if __name__ == '__main__':
