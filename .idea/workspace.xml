@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ba3bfb8a-83b8-4916-8dcc-921ee47a507e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/behavioral_cloning/model.h5" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/behavioral_cloning/behave.py" beforeDir="false" afterPath="$PROJECT_DIR$/behavioral_cloning/behave.py" afterDir="false" />
     </list>
